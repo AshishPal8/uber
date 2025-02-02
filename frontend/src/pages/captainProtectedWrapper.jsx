@@ -9,8 +9,6 @@ const CaptainProtectWrapper = ({ children }) => {
   const { setCaptain } = useContext(CaptainDataContext);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log("top is loading", isLoading);
-
   useEffect(() => {
     const validateToken = async () => {
       // If no token, redirect immediately
@@ -29,13 +27,10 @@ const CaptainProtectWrapper = ({ children }) => {
           }
         );
 
-        console.log("use effect is loading", isLoading);
-
         if (response.status === 201) {
           setCaptain(response.data);
           setIsLoading(false);
         }
-        console.log("After response 200", isLoading);
       } catch (err) {
         console.error("Authentication error:", err);
         localStorage.removeItem("token");
@@ -45,8 +40,6 @@ const CaptainProtectWrapper = ({ children }) => {
 
     validateToken();
   }, [token, navigate, setCaptain]);
-
-  console.log("end is Loading", isLoading);
 
   // Only show loading state if we have a token and are validating
   if (isLoading && token) {

@@ -7,7 +7,7 @@ const LookingForDriver = ({ setVehicleFound, setWaitingForDriver }) => {
         <h1 className="font-bold text-xl">Looking for rider</h1>
         <h5
           onClick={() => {
-            setVehicleFound(false);
+            setVehicleFound(true);
           }}
           className="text-xl font-semibold"
         >
