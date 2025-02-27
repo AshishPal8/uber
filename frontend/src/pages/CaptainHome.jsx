@@ -1,10 +1,12 @@
-import { useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { Link } from "react-router-dom";
 import CaptainDetails from "../components/captain/CaptainDetails";
 import RidePopup from "../components/captain/RidePopup";
 import ConfirmRidePopup from "../components/captain/ConfirmRidePopup";
+import { CaptainDataContext } from "../context/captainContext";
+import { SocketContext } from "../context/socketContext";
 
 const CaptainHome = () => {
   const [ridePopupPanel, setRidePopupPanel] = useState(true);
@@ -12,6 +14,15 @@ const CaptainHome = () => {
 
   const ridePopupPanelRef = useRef(null);
   const confirmRidePopupPanelRef = useRef(null);
+
+  const { captain } = useContext(CaptainDataContext);
+  const { sendMessage, receiveMessage } = useContext(SocketContext);
+
+  console.log(captain);
+
+  useEffect(() => {
+    sendMessage("join", { userType: "captain", userId: captain._id });
+  });
 
   useGSAP(
     function () {
@@ -42,6 +53,7 @@ const CaptainHome = () => {
     },
     [confirmRidePopupPanel]
   );
+
   return (
     <div className="h-screen relative">
       <div className="fixed flex items-center justify-between p-3 w-full">
