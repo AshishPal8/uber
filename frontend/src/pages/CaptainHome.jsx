@@ -16,12 +16,12 @@ const CaptainHome = () => {
   const confirmRidePopupPanelRef = useRef(null);
 
   const { captain } = useContext(CaptainDataContext);
-  const { sendMessage, receiveMessage } = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
 
   console.log(captain);
 
   useEffect(() => {
-    sendMessage("join", { userType: "captain", userId: captain._id });
+    socket.emit("join", { userType: "captain", userId: captain._id });
   });
 
   useGSAP(
