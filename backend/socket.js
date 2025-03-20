@@ -31,7 +31,7 @@ function initialiseSocket(server) {
       }
     });
 
-    socket.on("update-location-captain", async (data) => {
+    socket.on("update-captain-location", async (data) => {
       const { userId, location } = data;
 
       if (!location || !location.ltd || !location.lng) {
@@ -46,17 +46,16 @@ function initialiseSocket(server) {
       });
     });
 
-    
-
     socket.on("disconnect", () => {
       console.log("User disconnected", socket.id);
     });
   });
 }
 
-function sendMessageToSocketId(socketId, message) {
+function sendMessageToSocketId(socketId, messageObject) {
+  console.log(`Sending message to ${socketId}, ${messageObject}`);
   if (io) {
-    io.to(socketId).emit("message", message);
+    io.to(socketId).emit(messageObject.event, messageObject.data);
   } else {
     console.log("Socket not initialised");
   }

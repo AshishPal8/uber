@@ -44,6 +44,10 @@ const Home = () => {
     socket.emit("join", { userType: "user", userId: user._id });
   }, [user]);
 
+  socket.on("ride-confirmed", (ride) => {
+    setWaitingForDriver(true);
+  });
+
   const handlePickupChange = async (e) => {
     setPickup(e.target.value);
     try {

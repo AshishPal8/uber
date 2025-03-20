@@ -1,6 +1,11 @@
 import React from "react";
 
-const RidePopup = ({ setRidePopupPanel, setConfirmRidePopupPanel }) => {
+const RidePopup = ({
+  setRidePopupPanel,
+  setConfirmRidePopupPanel,
+  ride,
+  confirmRide,
+}) => {
   return (
     <div className="">
       <h5
@@ -19,7 +24,9 @@ const RidePopup = ({ setRidePopupPanel, setConfirmRidePopupPanel }) => {
             alt=""
             className="w-10 h-10 object-cover  rounded-full"
           />
-          <h4 className="font-medium text-lg">Harsh Patel</h4>
+          <h4 className="font-medium text-lg">
+            {ride?.user.fullname.firstname + " " + ride?.user.fullname.lastname}
+          </h4>
         </div>
         <div>
           <h3 className="text-lg font-bold">2.2 Km</h3>
@@ -31,20 +38,20 @@ const RidePopup = ({ setRidePopupPanel, setConfirmRidePopupPanel }) => {
           <i className="text-xl font-medium ri-map-pin-user-fill"></i>
           <div className="border-b border-gray-300 w-full pb-2">
             <h3 className="text-xl font-semibold">562/11-A</h3>
-            <p className="text-gray-600 text-base ">Govindpuram, Ghaziabad</p>
+            <p className="text-gray-600 text-base ">{ride?.pickup}</p>
           </div>
         </div>
         <div className="flex gap-4 items-center mt-2">
           <i className="text-xl font-medium ri-map-pin-fill"></i>
           <div className="border-b border-gray-300 w-full pb-2">
             <h3 className="text-xl font-semibold">562/11-A</h3>
-            <p className="text-gray-600 text-base ">Rajnagar, Ghaziabad</p>
+            <p className="text-gray-600 text-base ">{ride?.destination}</p>
           </div>
         </div>
         <div className="flex gap-4 items-center mt-2">
           <i className="text-xl font-medium ri-bank-card-line"></i>
           <div>
-            <h3 className="text-xl font-semibold">₹193.20</h3>
+            <h3 className="text-xl font-semibold">₹{ride?.fare}</h3>
             <p className="text-gray-600 text-base ">Cash</p>
           </div>
         </div>
@@ -65,6 +72,7 @@ const RidePopup = ({ setRidePopupPanel, setConfirmRidePopupPanel }) => {
           onClick={() => {
             setConfirmRidePopupPanel(true);
             setRidePopupPanel(false);
+            confirmRide();
           }}
         >
           Accept

@@ -7,10 +7,12 @@ import RidePopup from "../components/captain/RidePopup";
 import ConfirmRidePopup from "../components/captain/ConfirmRidePopup";
 import { CaptainDataContext } from "../context/captainContext";
 import { SocketContext } from "../context/socketContext";
+import axios from "axios";
 
 const CaptainHome = () => {
-  const [ridePopupPanel, setRidePopupPanel] = useState(true);
+  const [ridePopupPanel, setRidePopupPanel] = useState(false);
   const [confirmRidePopupPanel, setConfirmRidePopupPanel] = useState(false);
+  const [ride, setRide] = useState(null);
 
   const ridePopupPanelRef = useRef(null);
   const confirmRidePopupPanelRef = useRef(null);
@@ -18,11 +20,54 @@ const CaptainHome = () => {
   const { captain } = useContext(CaptainDataContext);
   const { socket } = useContext(SocketContext);
 
-  console.log(captain);
-
   useEffect(() => {
     socket.emit("join", { userType: "captain", userId: captain._id });
+
+    const updateLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          console.log({
+            userId: captain._id,
+            location: {
+              ltd: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
+          });
+          socket.emit("update-captain-location", {
+            userId: captain._id,
+            location: {
+              ltd: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
+          });
+        });
+      }
+    };
+
+    const locationInterval = setInterval(updateLocation, 500000);
+    updateLocation();
+  }, []);
+
+  socket.on("new-ride", (data) => {
+    console.log(data);
+    setRide(data);
+    setRidePopupPanel(true);
   });
+
+  async function confirmRide() {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/rides/confirm`,
+      {
+        rideId: ride._id,
+        captainId: captain._id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+  }
 
   useGSAP(
     function () {
@@ -84,8 +129,10 @@ const CaptainHome = () => {
         className="fixed z-10 bottom-2 bg-green-200 translate-y-full p-2 w-full rounded-t-xl py-6 pt-12"
       >
         <RidePopup
+          ride={ride}
           setRidePopupPanel={setRidePopupPanel}
           setConfirmRidePopupPanel={setConfirmRidePopupPanel}
+          confirmRide={confirmRide}
         />
       </div>
       <div
